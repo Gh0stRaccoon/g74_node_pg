@@ -1,5 +1,11 @@
 const express = require('express')
-const { getCostumers, addCostumer } = require('./consultas')
+const {
+  getCostumers,
+  addCostumer,
+  getCostumerById,
+  updateCostumer,
+  deleteCostumer
+} = require('./consultas')
 
 const app = express()
 
@@ -8,6 +14,29 @@ app.use(express.json())
 app.get('/clientes', async (req, res) => {
   const clientes = await getCostumers()
   res.json({ clientes, message: 'Estos son los clientes' })
+})
+
+app.get('/clientes/:idCliente', async (req, res) => {
+  const { idCliente } = req.params
+  const costumer = await getCostumerById(idCliente)
+
+  res.json({ costumer })
+})
+
+app.put('/clientes/:idCliente', async (req, res) => {
+  const { idCliente } = req.params
+  const { nombre } = req.query
+
+  const result = await updateCostumer(idCliente, nombre)
+
+  res.json({ actualizados: result })
+})
+
+app.delete('/clientes/:idCliente', async (req, res) => {
+  const idCliente = req.params.idCliente
+  const resultado = await deleteCostumer(idCliente)
+
+  res.json({ eliminados: resultado })
 })
 
 app.post('/clientes', async (req, res) => {
